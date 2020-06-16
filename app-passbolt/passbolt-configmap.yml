@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: passbolt-configmap
+data:
+  datasources-default-host: mariadb-service
+  datasources-default-database: passbolt
+  datasources-default-username: root
+  app-full-base-url: https://exemplo.com
+  email-default-from: passbolt@exemplo.com
+  email-transport-default-host: spmt.host

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: passbolt
+  labels:
+    app: passbolt
+    tier: frontend
+spec:
+  selector:
+    matchLabels:
+      app: passbolt
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: passbolt
+        tier: frontend
+    spec:
+      containers:
+      - image: passbolt/passbolt:2.12.1-debian
+        name: passbolt
+        env:
+        - name: DATASOURCES_DEFAULT_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: datasources-default-host
+              name: passbolt-configmap
+        - name: DATASOURCES_DEFAULT_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              key: datasources-default-database
+              name: passbolt-configmap
+        - name: DATASOURCES_DEFAULT_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: datasources-default-username
+              name: passbolt-configmap
+        - name: APP_FULL_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: app-full-base-url
+              name: passbolt-configmap
+        - name: DATASOURCES_DEFAULT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: passbolt-admin-pass
+              key: ADMIN_PASSWORD
+        - name: EMAIL_DEFAULT_FROM
+          valueFrom:
+            configMapKeyRef:
+              name: passbolt-configmap
+              key: email-default-from
+        - name: EMAIL_TRANSPORT_DEFAULT_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: passbolt-configmap
+              key: email-transport-default-host
+        ports:
+        - containerPort: 80
+          name: passbolt
